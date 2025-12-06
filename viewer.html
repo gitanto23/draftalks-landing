@@ -45,6 +45,7 @@
       position: relative;
       width: 100%;
       height: calc(100vh - 48px);
+      overflow: hidden;
     }
     canvas {
       width: 100%;
@@ -83,4 +84,22 @@
 <body>
   <header>
     <div>DRAFT — 3D Volume</div>
-    <a href="index.html">← Inde
+    <!-- link RELATIVO alla home -->
+    <a href="./index.html">← Index</a>
+  </header>
+
+  <div id="viewer-container">
+    <canvas id="arch-viewer"></canvas>
+
+    <div id="loading">
+      <div class="loading-inner">
+        <span>DRAFT</span>
+        <span>Loading volume…</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- viewer.js come modulo ES, percorso RELATIVO -->
+  <script type="module" src="./js/viewer.js"></script>
+</body>
+</html>
