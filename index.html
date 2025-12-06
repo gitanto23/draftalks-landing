@@ -3,59 +3,86 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>DRAFT — Architecture Talks</title>
+  <title>DRAFT — Volumi</title>
   <style>
-    body {
+    * { box-sizing: border-box; }
+    html, body {
       margin: 0;
-      padding: 4rem 5vw;
+      padding: 0;
+      width: 100%;
+      height: 100%;
       background: #ffffff;
       color: #000000;
       font-family: "Times New Roman", Georgia, serif;
     }
+    body {
+      display: flex;
+      flex-direction: column;
+    }
     header {
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      font-size: 0.8rem;
+      padding: 0.75rem 2rem;
       border-bottom: 1px solid #000;
-      padding-bottom: 1rem;
-      margin-bottom: 3rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      font-size: 0.75rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 2rem;
     }
     h1 {
-      font-size: 3rem;
-      margin: 0 0 0.5rem 0;
+      margin: 0 0 1rem;
+      font-size: 2.2rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
     }
     p {
       max-width: 32rem;
-      line-height: 1.4;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      margin: 0 0 1.5rem;
     }
-    .cta {
+    a.button {
       display: inline-block;
-      margin-top: 2rem;
-      padding: 0.75rem 1.5rem;
+      padding: 0.5rem 1.1rem;
       border: 1px solid #000;
       text-decoration: none;
-      color: #000;
       text-transform: uppercase;
-      letter-spacing: 0.09em;
-      font-size: 0.75rem;
+      letter-spacing: 0.12em;
+      font-size: 0.7rem;
     }
-    .cta:hover {
+    a.button:hover {
       background: #000;
       color: #fff;
     }
   </style>
 </head>
 <body>
-  <header>DRAFT — Architecture</header>
+  <header>
+    <div>DRAFT — Volumi in progress</div>
+    <div></div>
+  </header>
 
   <main>
-    <h1>Volumes in progress</h1>
+    <h1>DRAFT</h1>
     <p>
-      Where the new generation of architecture speaks.
+      Volumi in lavorazione, modelli aperti. Una lettura spaziale del progetto
+      in forma di maquette digitale orbitabile.
+    </p>
+    <p>
+      Questo prototipo mostra un primo volume 3D, navigabile dal browser.
     </p>
 
-    <a class="cta" href="viewer.html?model=progetto">Apri il primo volume 3D</a>
+    <!-- link RELATIVO a viewer.html (senza / davanti) -->
+    <a class="button" href="./viewer.html?model=progetto">
+      Apri il volume 3D
+    </a>
   </main>
 </body>
 </html>
