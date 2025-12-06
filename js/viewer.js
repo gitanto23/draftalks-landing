@@ -1,110 +1,86 @@
-// Tutto usa la variabile globale THREE (niente import)
+// Import Three.js modules from CDN (più affidabile per GitHub Pages)
+import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.162.0/build/three.module.js";
+import { OrbitControls } from "https://cdn.jsdelivr.net/npm/three@0.162.0/examples/jsm/controls/OrbitControls.js";
+import { GLTFLoader } from "https://cdn.jsdelivr.net/npm/three@0.162.0/examples/jsm/loaders/GLTFLoader.js";
 
-const container = document.getElementById("viewer-container");
+// === Canvas e loading ===
 const canvas = document.getElementById("arch-viewer");
-const loadingOverlay = document.getElementById("loading");
+const loading = document.getElementById("loading");
 
-// Renderer
-const renderer = new THREE.WebGLRenderer({
-  canvas: canvas,
-  antialias: true
-});
-renderer.setPixelRatio(window.devicePixelRatio);
-renderer.setSize(container.clientWidth, container.clientHeight);
-
-// Scene
+// === Scene, Camera, Renderer ===
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0xffffff);
 
-// Camera
 const camera = new THREE.PerspectiveCamera(
-  35,
-  container.clientWidth / container.clientHeight,
-  0.1,
-  500
+    45,
+    window.innerWidth / window.innerHeight,
+    0.1,
+    2000
 );
-camera.position.set(10, 12, 14);
+camera.position.set(4, 4, 4);
 
-// Controls
-const controls = new THREE.OrbitControls(camera, renderer.domElement);
+const renderer = new THREE.WebGLRenderer({
+    canvas: canvas,
+    antialias: true
+});
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setPixelRatio(window.devicePixelRatio);
+
+// === Luci ===
+const light = new THREE.DirectionalLight(0xffffff, 1);
+light.position.set(5, 10, 7);
+scene.add(light);
+
+scene.add(new THREE.AmbientLight(0xffffff, 0.5));
+
+// === Controlli Orbit ===
+const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
-controls.dampingFactor = 0.06;
-controls.rotateSpeed = 0.9;
-controls.zoomSpeed = 0.9;
-controls.target.set(0, 0, 0);
 
-// Luci
-const hemiLight = new THREE.HemisphereLight(0xffffff, 0xdddddd, 0.7);
-scene.add(hemiLight);
+// === Loader GLTF ===
+const loader = new GLTFLoader();
 
-const dirLight = new THREE.DirectionalLight(0xffffff, 0.9);
-dirLight.position.set(8, 16, 10);
-scene.add(dirLight);
+const urlParams = new URLSearchParams(window.location.search);
+const modelName = urlParams.get("model") || "progetto";
 
-// Modello fisso
-const MODEL_URL = "/models/progetto.glb";
-const loader = new THREE.GLTFLoader();
+const modelPath = `./models/${modelName}.glb`;
 
 loader.load(
-  MODEL_URL,
-  (gltf) => {
-    const model = gltf.scene;
+    modelPath,
+    (gltf) => {
+        const model = gltf.scene;
+        model.rotation.y = Math.PI;
+        scene.add(model);
 
-    // Clay material
-    model.traverse((child) => {
-      if (child.isMesh) {
-        child.material = new THREE.MeshStandardMaterial({
-          color: 0x111111,
-          roughness: 0.85,
-          metalness: 0.0
-        });
-      }
-    });
+        // Fit camera al modello
+        const box = new THREE.Box3().setFromObject(model);
+        const center = box.getCenter(new THREE.Vector3());
+        const size = box.getSize(new THREE.Vector3());
+        const maxDim = Math.max(size.x, size.y, size.z);
 
-    // Centra e scala
-    const box = new THREE.Box3().setFromObject(model);
-    const center = box.getCenter(new THREE.Vector3());
-    const size = box.getSize(new THREE.Vector3());
+        camera.position.set(center.x + maxDim * 1.5, center.y + maxDim * 1.2, center.z + maxDim * 1.5);
+        camera.lookAt(center);
 
-    model.position.sub(center);
-
-    const maxDim = Math.max(size.x, size.y, size.z);
-    const desiredSize = 10;
-    const scale = desiredSize / maxDim;
-    model.scale.setScalar(scale);
-
-    scene.add(model);
-
-    const dist = desiredSize * 2.2;
-    camera.position.set(dist, dist * 0.8, dist);
-    controls.target.set(0, 0, 0);
-    controls.update();
-
-    if (loadingOverlay) loadingOverlay.classList.add("hidden");
-  },
-  undefined,
-  (error) => {
-    console.error("Errore nel caricamento del modello:", error);
-    if (loadingOverlay) {
-      loadingOverlay.querySelector(".loading-inner span:last-child").textContent =
-        "Errore nel caricamento";
+        loading.classList.add("hidden");
+    },
+    undefined,
+    (error) => {
+        loading.innerHTML = "<span>Errore nel caricamento del modello.</span>";
+        console.error("Errore GLB:", error);
     }
-  }
 );
 
-// Resize
+// === Resize ===
 window.addEventListener("resize", () => {
-  const w = container.clientWidth;
-  const h = container.clientHeight;
-  renderer.setSize(w, h);
-  camera.aspect = w / h;
-  camera.updateProjectionMatrix();
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
-// Loop
+// === Loop ===
 function animate() {
-  requestAnimationFrame(animate);
-  controls.update();
-  renderer.render(scene, camera);
+    requestAnimationFrame(animate);
+    controls.update();
+    renderer.render(scene, camera);
 }
 animate();
