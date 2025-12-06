@@ -45,7 +45,6 @@
       position: relative;
       width: 100%;
       height: calc(100vh - 48px);
-      overflow: hidden;
     }
     canvas {
       width: 100%;
@@ -60,46 +59,30 @@
       align-items: center;
       justify-content: center;
       pointer-events: auto;
-      transition: opacity 0.35s ease;
+      transition: opacity 0.3s ease-in-out;
     }
     #loading.hidden {
-      opacity: 0;
-      pointer-events: none;
+        opacity: 0;
+        pointer-events: none;
     }
-    .loading-inner {
-      text-align: center;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      font-size: 0.7rem;
-    }
-    .loading-inner span {
-      display: block;
-    }
-    .loading-inner span:first-child {
-      margin-bottom: 0.4rem;
-      font-weight: bold;
+    #loading span {
+        font-size: 1.2rem;
+        text-transform: uppercase;
     }
   </style>
 </head>
 <body>
   <header>
-    <div>DRAFT — 3D Volume</div>
-    <!-- link RELATIVO alla home -->
-    <a href="./index.html">← Index</a>
+    <span>DRAFT - VOLUME 3D</span>
+    <a href="index.html">Torna all'indice</a>
   </header>
-
   <div id="viewer-container">
     <canvas id="arch-viewer"></canvas>
-
     <div id="loading">
-      <div class="loading-inner">
-        <span>DRAFT</span>
-        <span>Loading volume…</span>
-      </div>
+      <span>Caricamento modello...</span>
     </div>
   </div>
-
-  <!-- viewer.js come modulo ES, percorso RELATIVO -->
-  <script type="module" src="./js/viewer.js"></script>
+  
+  <script src="viewer.js" type="module"></script>
 </body>
 </html>
