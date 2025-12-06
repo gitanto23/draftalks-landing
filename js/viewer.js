@@ -1,4 +1,4 @@
-// CORREZIONE: Aggiornati gli URL per assicurare il corretto MIME Type dal CDN
+// CORREZIONE: Utilizzo del formato di importazione più robusto per evitare l'errore MIME Type su GitHub Pages
 import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.162.0/build/three.module.js";
 import { OrbitControls } from "https://cdn.jsdelivr.net/npm/three@0.162.0/examples/jsm/controls/OrbitControls.js";
 import { GLTFLoader } from "https://cdn.jsdelivr.net/npm/three@0.162.0/examples/jsm/loaders/GLTFLoader.js";
@@ -66,7 +66,8 @@ loader.load(
     },
     undefined,
     (error) => {
-        loading.innerHTML = "<span>Errore nel caricamento del modello.</span>";
+        // Se c'è un errore GLB (es. 404), qui lo mostriamo
+        loading.innerHTML = "<span>Errore nel caricamento del modello. Controlla il percorso /models/progetto.glb</span>";
         console.error("Errore GLB:", error);
     }
 );
