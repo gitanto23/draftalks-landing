@@ -43,7 +43,8 @@ const urlParams = new URLSearchParams(window.location.search);
 const modelName = urlParams.get("model") || "progetto";
 
 // PERCORSO DEL MODELLO: progetto.glb nella stessa cartella
-const modelPath = `./${modelName}.glb`;
+//const modelPath = `./${modelName}.glb`;
+const modelPath = "progetto.glb";
 
 loader.load(
     modelPath,
