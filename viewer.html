@@ -82,9 +82,16 @@
       <span>Caricamento modello...</span>
     </div>
   </div>
-  
-  <script src="/draftalks-landing/js/viewer.js" type="module"></script>
+
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.162.0/build/three.module.js",
+    "three/": "https://unpkg.com/three@0.162.0/"
+  }
+}
+</script>
+
+  <script src="./js/viewer.js" type="module"></script>
 </body>
 </html>
-
-
