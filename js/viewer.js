@@ -6,84 +6,76 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
 const canvas = document.getElementById("arch-viewer");
 const loading = document.getElementById("loading");
 
-// === Scene, Camera, Renderer ===
+// === Scene ===
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0xffffff);
 
+// === Camera ===
 const camera = new THREE.PerspectiveCamera(
     45,
     window.innerWidth / window.innerHeight,
     0.1,
-    2000
+    3000
 );
-camera.position.set(4, 4, 4);
+camera.position.set(5, 5, 5);
 
+// === Renderer ===
 const renderer = new THREE.WebGLRenderer({
     canvas: canvas,
     antialias: true
 });
 renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.setPixelRatio(window.devicePixelRatio);
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-// === Luci ===
-const light = new THREE.DirectionalLight(0xffffff, 1);
-light.position.set(5, 10, 7);
-scene.add(light);
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+// === Luci (soft editorial) ===
+const keyLight = new THREE.DirectionalLight(0xffffff, 0.9);
+keyLight.position.set(6, 10, 6);
+scene.add(keyLight);
+
+const fillLight = new THREE.DirectionalLight(0xffffff, 0.4);
+fillLight.position.set(-6, 4, -6);
+scene.add(fillLight);
+
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.45);
 scene.add(ambientLight);
 
 // === Controlli ===
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
+controls.enablePan = false;
+controls.minDistance = 1;
+controls.maxDistance = 25;
+controls.maxPolarAngle = Math.PI / 2;
 
 // === Loader GLTF ===
 const loader = new GLTFLoader();
 
-const urlParams = new URLSearchParams(window.location.search);
-const modelName = urlParams.get("model") || "progetto";
-
-// PERCORSO DEL MODELLO: progetto.glb nella stessa cartella
-const modelPath = `./${modelName}.glb`;
+const params = new URLSearchParams(window.location.search);
+const modelName = params.get("model") || "progetto";
+const modelPath = `./models/${modelName}.glb`;
 
 loader.load(
     modelPath,
     (gltf) => {
         const model = gltf.scene;
-        model.rotation.y = Math.PI;
+
+        // === Override grafico: monocromo editoriale ===
+        model.traverse((child) => {
+            if (child.isMesh) {
+                child.material = new THREE.MeshStandardMaterial({
+                    color: 0xf2f2f2,
+                    roughness: 0.9,
+                    metalness: 0.0
+                });
+            }
+        });
+
         scene.add(model);
 
-        // Fit camera al modello
+        // === Fit camera al modello ===
         const box = new THREE.Box3().setFromObject(model);
         const center = box.getCenter(new THREE.Vector3());
         const size = box.getSize(new THREE.Vector3());
         const maxDim = Math.max(size.x, size.y, size.z);
 
-        camera.position.set(center.x + maxDim * 1.5, center.y + maxDim * 1.2, center.z + maxDim * 1.5);
-        camera.lookAt(center);
-
-        loading.classList.add("hidden");
-    },
-    undefined,
-    (error) => {
-        loading.innerHTML = "<span>Errore nel caricamento del modello. Controlla che progetto.glb sia nella stessa cartella.</span>";
-        console.error("Errore GLB:", error);
-    }
-);
-
-// === Resize ===
-window.addEventListener("resize", () => {
-    const width = window.innerWidth;
-    const height = window.innerHeight;
-    renderer.setSize(width, height);
-    camera.aspect = width / height;
-    camera.updateProjectionMatrix();
-});
-
-// === Animazione ===
-function animate() {
-    requestAnimationFrame(animate);
-    controls.update();
-    renderer.render(scene, camera);
-}
-
-animate();
+        came
